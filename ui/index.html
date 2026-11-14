@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global MODIS FIRMS Fire Analysis</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+
+  <body>
+    <div id="globeViz"></div>
+
+    <!-- HEADER -->
+    <div id="header">
+      <h1>Global MODIS Active Fire Analysis</h1>
+      <p>NASA FIRMS • Country-level fire density and seasonality</p>
+    </div>
+
+    <!-- COUNTRY DASHBOARD (filled by js/components/infoPanel.js) -->
+    <div id="infoPanel">
+      <h2 id="countryName">Hover over a country</h2>
+      <div id="iso">MODIS FIRMS statistics</div>
+
+      <div class="metric">
+        <span class="metric-name">Continent</span>
+        <span class="metric-value" id="continent">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Total Fire Pixels</span>
+        <span class="metric-value" id="totalFires">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Fire Density</span>
+        <span class="metric-value" id="density">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Peak Burning Month</span>
+        <span class="metric-value" id="peakMonth">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Fire Season Duration</span>
+        <span class="metric-value" id="seasonDuration">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">12-Month Autocorrelation</span>
+        <span class="metric-value" id="autocorr">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Mean FRP</span>
+        <span class="metric-value" id="meanFrp">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Maximum FRP</span>
+        <span class="metric-value" id="maxFrp">—</span>
+      </div>
+      <div class="metric">
+        <span class="metric-name">Daytime Fires</span>
+        <span class="metric-value" id="daytime">—</span>
+      </div>
+    </div>
+
+    <!-- LEGEND (rows rendered by js/components/legend.js) -->
+    <div id="legend">
+      <div id="legendTitle">Fire Density / 10,000 km²</div>
+      <div id="legendRows"></div>
+    </div>
+
+    <div id="calendar">
+      <div id="calendarTitle">Fire Seasonality</div>
+      <div id="calendarIcon">🗓️</div>
+    </div>
+
+    <div id="hint">Hover over a country to view FIRMS statistics</div>
+    <div id="error"></div>
+
+    <!-- Dependency: globe.gl (bundles three.js, camera, controls, polygon interaction) -->
+    <script src="https://cdn.jsdelivr.net/npm/globe.gl"></script>
+
+    <!-- App code (ES modules; serve over http, e.g. `python -m http.server`) -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
