@@ -1,0 +1,27 @@
+[project]
+name = "firescope"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "hawlermathew2007", email = "139537864+hawlermathew2007@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.44.3",
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "psutil>=7.2.2",
+    "pyarrow>=26.0.1",
+    "pydantic>=2.14.3",
+    "pydantic-settings>=2.16.3",
+    "scipy>=1.18.1",
+    "shapely>=2.2.0",
+]
+
+[project.scripts]
+firescope = "firescope:main"
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13.0"]
+build-backend = "uv_build"
