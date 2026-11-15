@@ -1,33 +1,19 @@
-export const GEOJSON_URL = "firms_country_analysis.geojson";
+/**
+ * constants.js — fixed values that never change at runtime.
+ *
+ * Responsibility: colour scales, legend break points, month labels.
+ * Edit here to restyle the map or change density/intensity thresholds.
+ * Depends on: nothing.
+ */
 
-export const GLOBE_TEXTURE_URL =
-  "//cdn.jsdelivr.net/npm/three-globe/example/img/earth-dark.jpg";
+/* Country polygons: colour index = last break that the density reaches. */
+export const COUNTRY_COLORS = ["#172033", "#123454", "#155e75", "#0e7490", "#ca8a04", "#ea580c", "#e11d48", "#881337"];
+export const COUNTRY_BREAKS = [0, 10, 50, 100, 250, 500, 1000, 2000];
 
-export const MONTH_NAMES = [
-  "",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+/* Pixel / sensor-region layer. */
+export const PIXEL_COLORS = ["#fef08a", "#facc15", "#fb923c", "#f43f5e", "#be123c"];
+export const PIXEL_BREAKS = [0, 1, 5, 20, 100, 500];
 
-/* Fire density bins (per 10,000 km²). Shared by the map colours and the legend.
-   `max` is exclusive; the last bin is open-ended. */
-export const DENSITY_BINS = [
-  { max: 100, color: "#ffffb2", label: "Under 100" },
-  { max: 500, color: "#fecc5c", label: "100 – 499" },
-  { max: 1000, color: "#fd8d3c", label: "500 – 999" },
-  { max: 2000, color: "#f03b20", label: "1,000 – 1,999" },
-  { max: Infinity, color: "#bd0026", label: "2,000+" },
-];
+export const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-export const NO_DATA_COLOR = "#475569";
-export const HOVER_COLOR = "#22d3ee";
+export const SVG_NS = "http://www.w3.org/2000/svg";

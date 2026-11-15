@@ -1,50 +1,38 @@
-import { GEOJSON_URL } from "./constants.js";
-import { createGlobe } from "./components/globe.js";
-import { renderLegend } from "./components/legend.js";
-import { updateInfoPanel } from "./components/infoPanel.js";
+/**
+ * main.js — application entry point.
+ *
+ * Responsibility: run the start-up sequence in order and nothing else.
+ *   1. populate year dropdown and bind UI events
+ *   2. draw the initial legend and empty panel
+ *   3. create the globe (stop with an error if globe.gl failed to load)
+ *   4. load the default year's data
+ * Load it from index.html with:  <script type="module" src="js/main.js"></script>
+ */
 
-function showError(message) {
-  const box = document.getElementById("error");
-  box.style.display = "block";
-  box.textContent = message;
-}
+import { state } from "./state.js";
+import { initGlobe } from "./globe/globe.js";
+import { populateYears, bindUi } from "./ui/controls.js";
+import { renderLegend } from "./ui/legend.js";
+import { showEmpty } from "./ui/infoPanel.js";
+import { showError, setLoading } from "./ui/status.js";
+import { handleHover, handleClick } from "./controllers/selection.js";
+import { setYear } from "./controllers/view.js";
 
-async function loadCountries() {
-  const response = await fetch(GEOJSON_URL);
-
-  if (!response.ok) {
-    throw new Error(`GeoJSON request failed: HTTP ${response.status}`);
-  }
-
-  const data = await response.json();
-
-  if (data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
-    throw new Error("Invalid GeoJSON FeatureCollection.");
-  }
-
-  return data.features.filter((feature) => {
-    const type = feature.geometry?.type;
-    const iso = feature.properties?.iso_a3;
-    return (type === "Polygon" || type === "MultiPolygon") && iso !== "ATA";
-  });
-}
-
-async function init() {
+async function start() {
+  populateYears();
+  bindUi();
   renderLegend();
+  showEmpty();
 
   try {
-    const countries = await loadCountries();
-    console.log("Countries loaded:", countries.length);
-
-    createGlobe(document.getElementById("globeViz"), countries);
-
-    if (countries.length > 0) {
-      updateInfoPanel(countries[0]);
-    }
+    initGlobe({ onHover: handleHover, onClick: handleClick });
   } catch (error) {
-    console.error(error);
-    showError("Unable to initialize globe: " + error.message);
+    setLoading(false);
+    showError(`Unable to initialize globe: ${error.message}`);
+    return;
   }
+
+  await setYear(state.year);
 }
 
-init();
+start();
