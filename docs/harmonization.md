@@ -15,8 +15,6 @@ The methodology is organized into two main components:
 1. **Non-FRP feature standardization:** ensuring consistent data representation, quality filtering, spatial referencing, and temporal matching.
 2. **FRP harmonization:** correcting sensor-specific FRP differences through duplicate correction, spatial aggregation, statistical screening, empirical calibration, and sensor fusion.
 
----
-
 ## 2. Features Needed to Be Harmonized
 
 Not every field should be converted into a common numerical scale. Some features require standardization, some are used for matching or quality control, and others should remain sensor-specific because they represent different spectral measurements.
@@ -46,7 +44,6 @@ Consequently, this methodology does not apply a direct numerical conversion betw
 
 FRP is treated differently because the main objective is to establish an empirically consistent quantitative record across the two sensors.
 
----
 
 ## 3. Methods
 
@@ -224,15 +221,15 @@ The reconstructed VIIRS footprints are spatially indexed to identify potential c
 
 For a MODIS footprint \(P_i\), a VIIRS detection \(j\) is eligible for aggregation when:
 
-\[
+$$
 \operatorname{Centre}(P_j)\in P_i
-\]
+$$
 
 and:
 
-\[
+$$
 |t_j-t_i|\leq 5\text{ minutes}
-\]
+$$
 
 The spatial condition requires the centre of the VIIRS footprint to fall inside or on the boundary of the MODIS footprint.
 
@@ -246,11 +243,11 @@ Because VIIRS has finer spatial resolution than MODIS, multiple VIIRS fire detec
 
 Their FRP values are aggregated by summation:
 
-\[
+$$
 FRP_{\mathrm{VIIRS,aggregated},i}
 =
 \sum_{j=1}^{n_i} FRP_{\mathrm{VIIRS},j}
-\]
+$$
 
 where \(n_i\) represents the number of VIIRS detections whose centres fall inside the MODIS footprint and satisfy the temporal matching condition.
 
@@ -258,11 +255,11 @@ This produces a VIIRS-derived FRP estimate corresponding to the spatial support 
 
 The aggregated VIIRS FRP is used directly:
 
-\[
+$$
 FRP_{\mathrm{VIIRS,reference}}
 =
 FRP_{\mathrm{VIIRS,aggregated}}
-\]
+$$
 
 No area-based cloud correction is applied in this implementation because the required clear-sky and cloud-covered area information is not available in the selected input feature set.
 
@@ -274,27 +271,27 @@ Some matched observations may contain unusually large FRP differences caused by 
 
 To reduce the influence of extreme observations during calibration, the logarithmic FRP ratio is calculated for each matched footprint:
 
-\[
+$$
 q_i =
 \ln\left(
 \frac{FRP_{\mathrm{VIIRS,aggregated},i}}
 {FRP_{\mathrm{MODIS},i}}
 \right)
-\]
+$$
 
 The first quartile (\(Q_1\)), third quartile (\(Q_3\)), and interquartile range (IQR) are calculated across the matched sample population:
 
-\[
+$$
 IQR=Q_3-Q_1
-\]
+$$
 
 The accepted interval is:
 
-\[
+$$
 Q_1-1.5(IQR)
 \leq q_i \leq
 Q_3+1.5(IQR)
-\]
+$$
 
 Observations outside this interval are excluded from the calibration sample.
 
@@ -316,7 +313,7 @@ Let:
 
 The track dimension is modelled as:
 
-\[
+$$
 S_{\mathrm{track}} =
 r_s s
 \left[
@@ -326,18 +323,18 @@ r_s s
 \sin^2(\Omega)
 }
 \right]
-\]
+$$
 
 The scan angle \(\Omega\) is estimated numerically by solving this equation for the observed track dimension.
 
 The viewing zenith angle is then calculated as:
 
-\[
+$$
 VZA =
 \arcsin\left(
 \frac{r_s}{R_e}\sin(\Omega)
 \right)
-\]
+$$
 
 The trigonometric calculations use radians internally, and the resulting VZA is converted into degrees for subsequent calibration.
 
@@ -351,27 +348,27 @@ After anomalous samples have been removed, the remaining matched observations ar
 
 For each matched observation:
 
-\[
+$$
 R_i =
 \frac{FRP_{\mathrm{VIIRS,aggregated},i}}
 {FRP_{\mathrm{MODIS},i}}
-\]
+$$
 
 The observations are grouped into 1-degree VZA bins.
 
 For each bin \(k\), calculate the mean VZA and mean FRP ratio:
 
-\[
+$$
 \overline{\theta}_k =
 \frac{1}{n_k}
 \sum_{i\in k}\theta_i
-\]
+$$
 
-\[
+$$
 R_k =
 \frac{1}{n_k}
 \sum_{i\in k}R_i
-\]
+$$
 
 where \(n_k\) is the number of matched observations in bin \(k\).
 
@@ -379,9 +376,9 @@ Bins containing fewer than five observations are excluded from polynomial fittin
 
 A second-degree polynomial is fitted to the bin-level mean ratios:
 
-\[
+$$
 R(\theta)=a\theta^2+b\theta+c
-\]
+$$
 
 where:
 
@@ -450,8 +447,6 @@ Only MODIS footprints with at least one valid VIIRS spatial and temporal match a
 
 The output therefore maintains the MODIS footprint as its spatial reference while using the selected sensor's FRP estimate.
 
----
-
 ## 4. Final Harmonized Dataset
 
 The final dataset is organized around the MODIS spatial footprint, with VIIRS observations aggregated to that reference footprint.
@@ -488,8 +483,6 @@ The harmonized FRP field is the primary variable for subsequent fire activity an
 
 The original and intermediate FRP fields are retained to support quality assessment, reproducibility, and comparisons between the original sensor observations and the harmonized estimates.
 
----
-
 ## 5. Methodological Limitations and Considerations
 
 Several limitations should be considered when interpreting the harmonized dataset.
@@ -512,8 +505,6 @@ Several limitations should be considered when interpreting the harmonized datase
 
 9. **Platform differences:** Terra, Aqua, and NOAA-20 have different orbital and observation characteristics. The calibration and fusion results should be assessed for potential platform-specific effects.
 
----
-
 ## 6. References
 
 1. Giglio, L., Schroeder, W., and Justice, C. O. (2016). The collection 6 MODIS active fire detection algorithm and fire products. *Remote Sensing of Environment*.  
@@ -530,13 +521,3 @@ Several limitations should be considered when interpreting the harmonized datase
 
 5. NASA. (2024). *Collection 2 VIIRS Burned Area Product User's Guide*, Version 1.1.  
    [VIIRS Collection 2 Burned Area User Guide](https://ladsweb.modaps.eosdis.nasa.gov/archive/Document%20Archive/Science%20Data%20Product%20Documentation/VIIRS_C2_BA_User_Guide_1.1.pdf)
-
----
-
-## 7. Methodological Basis
-
-The overall framework is informed by recent research on MODIS–VIIRS FRP correction and spatiotemporal fusion, particularly the correction-before-fusion approach described by Zheng et al. (2026).
-
-The present implementation adapts this general framework to the available data and project requirements. In particular, it combines Terra and Aqua MODIS observations with NOAA-20 VIIRS observations, uses an approximate FIRMS-based footprint reconstruction, omits area-based cloud correction, and applies the specified confidence-prioritized fusion strategy.
-
-The resulting dataset is intended to provide a more internally consistent FRP record for long-term fire activity analysis while retaining the original sensor information needed for validation and further investigation.
